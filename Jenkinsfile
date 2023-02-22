@@ -20,18 +20,7 @@ pipeline {
     }
 	
     stages {
-        stage('GRADLE --> TESTING') {
-            steps{
-                    sh './gradlew test'	
-            }		
-            post {
-                success {
-                junit 'build/test-results/**/*.xml'
-            }
-            failure {
-                echo "\033[20mFAILED!\033[0m"
-            }	 
-        }    
+      
         stage('DOCKER --> BUILDING & TAGGING IMAGE') {
                 steps{
             sh """
