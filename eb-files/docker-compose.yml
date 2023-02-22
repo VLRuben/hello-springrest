@@ -3,4 +3,4 @@ services:
   springrestruben:
     image: ghcr.io/vlruben/hello-springrest/hellospringrestpkg:latest
     ports:
-      - '80:80'
+      - '80:8080'
