@@ -38,7 +38,7 @@ pipeline {
 	stage('DOCKER --> BUILDING & TAGGING IMAGE') {
             steps{
 		sh """
-		docker-compose build
+		        docker-compose build
                 git tag ${VERSION}
                 docker tag ${GIT_REPO_PKG}:latest ${GIT_REPO_PKG}:${VERSION}
 		"""
