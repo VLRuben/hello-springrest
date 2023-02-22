@@ -1,0 +1,10 @@
+FROM amazoncorretto:11-alpine as build
+WORKDIR /opt/springrest
+COPY . . 
+RUN ./gradlew boot
+
+FROM amazoncorretto:11-alpine
+WORKDIR /opt/springrest
+COPY --from=build /opt/springrest/main . 
+EXPOSE 8080
+CMD ["./main"]
