@@ -20,50 +20,51 @@ pipeline {
     }
 	
     stages {
-    stage('GRADLE --> TESTING') {
-        steps{
-		        sh './gradlew test'	
-	    }		
-	    post {
-	    	success {
-		    junit 'build/test-results/**/*.xml'
-		}
-	    failure {
-		    echo "\033[20mFAILED!\033[0m"
-	    }	 
-    }    
-	stage('DOCKER --> BUILDING & TAGGING IMAGE') {
+        stage('GRADLE --> TESTING') {
             steps{
-		sh """
-		docker-compose build
-                git tag ${VERSION}
-                docker tag ${GIT_REPO_PKG}:latest ${GIT_REPO_PKG}:${VERSION}
-		"""
-		sshagent([GIT_SSH]) {
-		    sh 'git push --tags'
-		}
-	    }	                              
-        }  
-        
-        stage('DOCKER --> LOGIN & PUSHING TO GHCR.IO') {
-            steps{ 
-                withCredentials([string(credentialsId: GHCR_TOKEN, variable: 'TOKEN_GIT')]) {
-                    sh """
-                    echo $TOKEN_GIT | docker login ghcr.io -u ${GIT_USER} --password-stdin
-                    docker push ${GIT_REPO_PKG}:${VERSION}
-                    docker push ${GIT_REPO_PKG}:latest
-                    """	
-		        }
+                    sh './gradlew test'	
+            }		
+            post {
+                success {
+                junit 'build/test-results/**/*.xml'
             }
-        } 
-
-         stage('EB --> DEPLOYING') {
-            steps {
-		        dir ("eb-files"){
-		            sh 'eb deploy'
+            failure {
+                echo "\033[20mFAILED!\033[0m"
+            }	 
+        }    
+        stage('DOCKER --> BUILDING & TAGGING IMAGE') {
+                steps{
+            sh """
+            docker-compose build
+                    git tag ${VERSION}
+                    docker tag ${GIT_REPO_PKG}:latest ${GIT_REPO_PKG}:${VERSION}
+            """
+            sshagent([GIT_SSH]) {
+                sh 'git push --tags'
+            }
+            }	                              
+            }  
+            
+            stage('DOCKER --> LOGIN & PUSHING TO GHCR.IO') {
+                steps{ 
+                    withCredentials([string(credentialsId: GHCR_TOKEN, variable: 'TOKEN_GIT')]) {
+                        sh """
+                        echo $TOKEN_GIT | docker login ghcr.io -u ${GIT_USER} --password-stdin
+                        docker push ${GIT_REPO_PKG}:${VERSION}
+                        docker push ${GIT_REPO_PKG}:latest
+                        """	
+                    }
                 }
-	        }
-        }  
-    
-    }     
+            } 
+
+            stage('EB --> DEPLOYING') {
+                steps {
+                    dir ("eb-files"){
+                        sh 'eb deploy'
+                    }
+                }
+            }  
+        
+        }     
+    }
 }
