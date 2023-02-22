@@ -62,10 +62,12 @@ pipeline {
         
         stage('EB --> DEPLOYING') {
             steps {
-		dir ("eb-files"){
-		    sh 'eb deploy'
-		}
-	    }
+                withAWS(credentials: 'ruben-aws-credentials') {
+		            dir ("eb-files"){
+		                sh 'eb deploy'
+                    }
+		        }
+	        }
         }
     
     }                
