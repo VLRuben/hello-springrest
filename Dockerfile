@@ -4,8 +4,8 @@ COPY . .
 RUN gradle build
 
 FROM amazoncorretto:11-alpine
-LABEL org.opencontainers.image.source = "https://github.com/VLRuben/hello-springrest"
 WORKDIR /opt/springest
 COPY --from=build /opt/springrest/build/libs/rest-service-0.0.1-SNAPSHOT.jar .
 EXPOSE 8080
 CMD ["java", "-jar", "rest-service-0.0.1-SNAPSHOT.jar"]
+LABEL org.opencontainers.image.source = "https://github.com/VLRuben/hello-springrest"
