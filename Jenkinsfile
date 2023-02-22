@@ -20,7 +20,18 @@ pipeline {
     }
 	
     stages {
-        
+    stage('GRADLE --> TESTING') {
+        steps{
+		        sh './gradlew test'	
+	    }		
+	    post {
+	    	success {
+		    junit 'build/test-results/**/*.xml'
+		}
+	    failure {
+		    echo "\033[20mFAILED!\033[0m"
+	    }	 
+    }    
 	stage('DOCKER --> BUILDING & TAGGING IMAGE') {
             steps{
 		sh """
@@ -36,14 +47,23 @@ pipeline {
         
         stage('DOCKER --> LOGIN & PUSHING TO GHCR.IO') {
             steps{ 
-		withCredentials([string(credentialsId: GHCR_TOKEN, variable: 'TOKEN_GIT')]) {
-		    sh """
-		    echo $TOKEN_GIT | docker login ghcr.io -u ${GIT_USER} --password-stdin
-		    docker push ${GIT_REPO_PKG}:${VERSION}
-		    """	
-		}
+                withCredentials([string(credentialsId: GHCR_TOKEN, variable: 'TOKEN_GIT')]) {
+                    sh """
+                    echo $TOKEN_GIT | docker login ghcr.io -u ${GIT_USER} --password-stdin
+                    docker push ${GIT_REPO_PKG}:${VERSION}
+                    docker push ${GIT_REPO_PKG}:latest
+                    """	
+		        }
             }
-        }   
+        } 
+
+         stage('EB --> DEPLOYING') {
+            steps {
+		        dir ("eb-files"){
+		            sh 'eb deploy'
+                }
+	        }
+        }  
     
     }     
 }

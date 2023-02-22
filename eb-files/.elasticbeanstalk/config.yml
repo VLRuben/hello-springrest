@@ -1,0 +1,22 @@
+branch-defaults:
+  default:
+    environment: eb-ruben-hello-springrest-dev2
+    group_suffix: null
+environment-defaults:
+  eb-ruben-hello-springrest-dev2:
+    branch: null
+    repository: null
+global:
+  application_name: eb-ruben-hello-springrest
+  branch: null
+  default_ec2_keyname: clave-lucatic
+  default_platform: Docker running on 64bit Amazon Linux 2
+  default_region: eu-west-1
+  include_git_submodules: true
+  instance_profile: null
+  platform_name: null
+  platform_version: null
+  profile: null
+  repository: null
+  sc: null
+  workspace_type: Application
