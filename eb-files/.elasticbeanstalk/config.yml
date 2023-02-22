@@ -1,6 +1,6 @@
 branch-defaults:
   default:
-    environment: eb-ruben-hello-springrest-dev2
+    environment: eb-ruben-hello-springrest-dev
     group_suffix: null
 environment-defaults:
   eb-ruben-hello-springrest-dev2:
