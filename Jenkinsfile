@@ -60,12 +60,12 @@ pipeline {
     }   
     stage ("TRIVYYY") {
         steps{
-            sh 'trivy fs --security-checks vuln,secret,config -o ${WORKSPACE}/build/reports/trivy-report.json .'	
+            sh 'trivy fs --security-checks vuln,secret,config -o ${WORKSPACE}/build/reports/trivy/trivy-report.json .'	
         }		
             post {
                 success {
                     recordIssues(tools: [
-                        trivy(pattern: '${WORKSPACE}/build/reports/*.json')
+                        trivy(pattern: '${WORKSPACE}/build/reports/trivy/*.json')
                     ])      
 
                 }
