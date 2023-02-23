@@ -75,14 +75,6 @@ pipeline {
 	        }	 
     }
 
-
-    stage ('TRIVY GENERATOR') {
-        steps {
-            sh 'trivy fs --security-checks vuln,secret,config -o ${WORKSPACE}/build/reports/trivy-report.json .'	
-            recordIssues(tools: [trivy(pattern: '${WORKSPACE}/build/reports/*.json')])      
-        } 
-    }
-
 	stage('DOCKER --> BUILDING & TAGGING IMAGE') {
             steps{
 		sh """
@@ -115,8 +107,7 @@ pipeline {
 		                sh 'eb deploy'
                     }
 		        }
-	        }
-        }
+	    }
+    }
     
-    }                
-}
+}                
