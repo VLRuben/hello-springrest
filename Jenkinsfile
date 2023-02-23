@@ -59,12 +59,30 @@ pipeline {
         }
     }   
 
+    steps{
+        sh 'trivy fs --security-checks vuln,secret,config -o ${WORKSPACE}/build/reports/trivy-report.json .'	
+	    }		
+            post {
+                success {
+                    recordIssues(tools: [
+                        trivy(pattern: '${WORKSPACE}/build/reports/*.json')
+                    ])      
+
+                }
+                failure {
+                    echo "\033[20mFAILED!\033[0m"
+                }
+	        }	 
+    }
+
+
     stage ('TRIVY GENERATOR') {
         steps {
             sh 'trivy fs --security-checks vuln,secret,config -o ${WORKSPACE}/build/reports/trivy-report.json .'	
-            recordIssues(tools: [trivy(pattern: 'build/reports/*.json')])      
+            recordIssues(tools: [trivy(pattern: '${WORKSPACE}/build/reports/*.json')])      
         } 
     }
+
 	stage('DOCKER --> BUILDING & TAGGING IMAGE') {
             steps{
 		sh """
