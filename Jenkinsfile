@@ -28,6 +28,9 @@ pipeline {
 	    post {
 	    	success {
 		    junit 'build/test-results/**/*.xml'
+            jacoco (
+                        execPattern: 'build/jacoco/**.exec'
+            )
 		}
 	        failure {
 		    echo "\033[20mFAILED!\033[0m"
