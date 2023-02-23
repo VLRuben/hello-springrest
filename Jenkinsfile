@@ -48,7 +48,7 @@ pipeline {
     stage ('GRADLEW CHECK') {
         steps {
             sh './gradlew check'	
-            recordIssues(tools: [pmdParser(pattern: '/build/reports/pmd/*.xml')])
+            recordIssues(tools: [pmdParser(pattern: 'build/reports/pmd/*.xml')])
         }
     }   
 
