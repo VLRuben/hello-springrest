@@ -73,8 +73,8 @@ pipeline {
                     echo "\033[20mFAILED!\033[0m"
                 }
             }	 
-        }
     }
+    
 	stage('DOCKER --> BUILDING & TAGGING IMAGE') {
             steps{
 		sh """
@@ -100,14 +100,15 @@ pipeline {
             }
         }   
         
-        stage('EB --> DEPLOYING') {
-            steps {
-                withAWS(credentials: 'ruben-aws-credentials') {
-		            dir ("eb-files"){
-		                sh 'eb deploy'
-                    }
+            stage('EB --> DEPLOYING') {
+                steps {
+                  withAWS(credentials: 'ruben-aws-credentials') {
+		             dir ("eb-files"){
+		                    sh 'eb deploy'
+                     }
 		        }
-	    }
-    }
+	         }
+     }
     
-}                
+    }                
+}
