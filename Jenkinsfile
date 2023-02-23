@@ -58,10 +58,10 @@ pipeline {
             recordIssues(tools: [pmdParser(pattern: 'build/reports/pmd/*.xml')])
         }
     }   
-
-    steps{
-        sh 'trivy fs --security-checks vuln,secret,config -o ${WORKSPACE}/build/reports/trivy-report.json .'	
-	    }		
+    stage ("TRIVYYY") {
+        steps{
+            sh 'trivy fs --security-checks vuln,secret,config -o ${WORKSPACE}/build/reports/trivy-report.json .'	
+        }		
             post {
                 success {
                     recordIssues(tools: [
@@ -72,9 +72,9 @@ pipeline {
                 failure {
                     echo "\033[20mFAILED!\033[0m"
                 }
-	        }	 
+            }	 
+        }
     }
-
 	stage('DOCKER --> BUILDING & TAGGING IMAGE') {
             steps{
 		sh """
