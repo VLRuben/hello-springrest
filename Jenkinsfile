@@ -61,7 +61,7 @@ pipeline {
     stage ('TRIVY GENERATOR') {
         steps {
             sh 'mkdir build/reports/trivy'
-            sh 'trivy fs --security-checks vuln,secret,config -o /build/reports/trivy/informe.json -f json .'	
+            sh 'trivy fs --security-checks vuln,secret,config -o build/reports/trivy/informe.json -f json .'	
             recordIssues(tools: [pmdParser(pattern: 'build/reports/trivy/*.xml')])
         }
     } 
