@@ -11,6 +11,13 @@ def AWS_KEY_ROOT = 'ruben-aws-credentials'		                                // A
 //def ANSIBLE_PB = 'ansible/hello_2048.yml' 				                        // Ansible playbook path
 def VERSION = "1.${BUILD_NUMBER}"					                            // TAG version with BUILD_NUMBER
 
+
+/*
+
+recoger con warning ng los resultados de ejecutar el graddlew check
+esto suelta archivos.xml con los resultados del pmd
+
+*/
 pipeline {
 	
     agent any 
@@ -20,13 +27,7 @@ pipeline {
     }
 	
     stages {
-        
-    stage () {
-        
-    }
-
-
-
+    
 	stage('GRADLE --> TESTING') {
         steps{
 		    sh './gradlew test'	
@@ -43,7 +44,12 @@ pipeline {
                 }
 	        }	 
     }
-	    
+
+    stage ('GRADLEW CHECK') {
+        sh './gradlew check'	
+        recordIssues(tools: [pmdParser(pattern: '/build/reports/pmd/*.xml')])
+    }   
+
 	stage('DOCKER --> BUILDING & TAGGING IMAGE') {
             steps{
 		sh """
