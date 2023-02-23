@@ -58,22 +58,25 @@ pipeline {
             recordIssues(tools: [pmdParser(pattern: 'build/reports/pmd/*.xml')])
         }
     }   
-    stage ("TRIVYYY") {
-        steps{
-            sh 'trivy fs --security-checks vuln,secret,config -o ${WORKSPACE}/build/reports/trivy/trivy-report.json .'	
-        }		
-            post {
-                success {
-                    recordIssues(tools: [
-                        trivy(pattern: '${WORKSPACE}/build/reports/trivy/*.json')
-                    ])      
+    
+    stage('AQUA-TRIVY --> SECURITY SCAN') {
+	    // Run AquaTrivy with the current working directory as the scan target and generate a JSON report in the workspace directory
+	    steps {
+	        sh "trivy fs --security-checks vuln,secret,config -f json -o ${WORKSPACE}/build/reports/trivy-report.json ."
+	    }
+	    post {
+		success {
+		    // Call the recordIssues task and specify the AquaTrivy tool to collect JSON reports generated in the path /workspace
+		    recordIssues(tools: [
+			trivy(pattern: 'build/reports/*.json')
+		    ])
+		}
+		failure {
+		    echo "\033[20mFAILED!\033[0m" // Print an error message in red if the stage fails
+		}
+	    }
+	}
 
-                }
-                failure {
-                    echo "\033[20mFAILED!\033[0m"
-                }
-            }	 
-    }
     
 	stage('DOCKER --> BUILDING & TAGGING IMAGE') {
             steps{
