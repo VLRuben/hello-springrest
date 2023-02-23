@@ -21,22 +21,28 @@ pipeline {
 	
     stages {
         
+    stage () {
+        
+    }
+
+
+
 	stage('GRADLE --> TESTING') {
-            steps{
-		sh './gradlew test'	
+        steps{
+		    sh './gradlew test'	
 	    }		
-	    post {
-	    	success {
-		    junit 'build/test-results/**/*.xml'
-            jacoco (
+            post {
+                success {
+                    junit 'build/test-results/**/*.xml'
+                        jacoco (
                         execPattern: 'build/jacoco/**.exec'
-            )
-		}
-	        failure {
-		    echo "\033[20mFAILED!\033[0m"
-		}
-	    }	 
-        }
+                        )
+                }
+                failure {
+                    echo "\033[20mFAILED!\033[0m"
+                }
+	        }	 
+    }
 	    
 	stage('DOCKER --> BUILDING & TAGGING IMAGE') {
             steps{
