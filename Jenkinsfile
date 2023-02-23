@@ -60,9 +60,8 @@ pipeline {
     }   
     stage ('TRIVY GENERATOR') {
         steps {
-            sh 'mkdir build/reports/trivy'
-            sh 'trivy fs --security-checks vuln,secret,config -o build/reports/trivy/informe.json -f json .'	
-            recordIssues(tools: [pmdParser(pattern: 'build/reports/trivy/*.xml')])
+            sh 'trivy fs --security-checks vuln,secret,config -o ${WORKSPACE}/build/reports/trivy-report.json .'	
+            recordIssues(tools: [pmdParser(pattern: 'build/reports/*.json')])
         }
     } 
 
