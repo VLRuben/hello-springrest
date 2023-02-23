@@ -17,6 +17,13 @@ def VERSION = "1.${BUILD_NUMBER}"					                            // TAG version
 recoger con warning ng los resultados de ejecutar el graddlew check
 esto suelta archivos.xml con los resultados del pmd
 
+
+TRIVY
+ejecutarlo de forma manual en el repo
+ver que podemos generar informes
+una vez generado, se mete al Jenkinsfile y que lo vea en el path (file system) que se genere
+hacerlo en un stage aparte
+
 */
 pipeline {
 	
@@ -51,6 +58,13 @@ pipeline {
             recordIssues(tools: [pmdParser(pattern: 'build/reports/pmd/*.xml')])
         }
     }   
+    stage ('TRIVY GENERATOR') {
+        steps {
+            sh 'trivy fs --security-checks vuln,secret,config -o /build/reports/trivy/informe.json -f json .'	
+            recordIssues(tools: [pmdParser(pattern: 'build/reports/trivy/*.xml')])
+        }
+    } 
+
 
 	stage('DOCKER --> BUILDING & TAGGING IMAGE') {
             steps{
