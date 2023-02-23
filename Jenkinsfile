@@ -46,8 +46,10 @@ pipeline {
     }
 
     stage ('GRADLEW CHECK') {
-        sh './gradlew check'	
-        recordIssues(tools: [pmdParser(pattern: '/build/reports/pmd/*.xml')])
+        steps {
+            sh './gradlew check'	
+            recordIssues(tools: [pmdParser(pattern: '/build/reports/pmd/*.xml')])
+        }
     }   
 
 	stage('DOCKER --> BUILDING & TAGGING IMAGE') {
